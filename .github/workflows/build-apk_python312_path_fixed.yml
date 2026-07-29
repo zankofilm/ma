@@ -1,0 +1,145 @@
+name: Build Android APK - Python 3.12
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Locate Buildozer project
+        shell: bash
+        run: |
+          set -euo pipefail
+          SPEC_PATH="$(find "$GITHUB_WORKSPACE" \
+            -type f -name buildozer.spec \
+            -not -path '*/.buildozer/*' \
+            -print -quit)"
+
+          if [ -z "$SPEC_PATH" ]; then
+            echo "ERROR: buildozer.spec was not found anywhere in the repository."
+            echo "Repository files:"
+            find "$GITHUB_WORKSPACE" -maxdepth 5 -type f | sort
+            exit 1
+          fi
+
+          APP_DIR="$(dirname "$SPEC_PATH")"
+          echo "APP_DIR=$APP_DIR" >> "$GITHUB_ENV"
+          echo "Found buildozer.spec: $SPEC_PATH"
+          echo "Build directory: $APP_DIR"
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify Python 3.12
+        run: |
+          python --version
+          python -c "import sys; assert sys.version_info[:2] == (3, 12), sys.version"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Install system build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git zip unzip openjdk-17-jdk autoconf automake autopoint \
+            libtool libtool-bin m4 gettext pkg-config zlib1g-dev \
+            libncurses5-dev cmake libffi-dev libssl-dev \
+            build-essential ccache
+
+      - name: Cache Buildozer global directory
+        uses: actions/cache@v4
+        with:
+          path: ~/.buildozer
+          key: javanrood-buildozer-global-v4-py312-ndk28c-${{ runner.os }}-${{ hashFiles('**/buildozer.spec') }}
+
+      - name: Cache Buildozer local build directory
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.APP_DIR }}/.buildozer
+          key: javanrood-buildozer-local-v4-py312-ndk28c-${{ runner.os }}-${{ hashFiles('**/buildozer.spec') }}
+
+      - name: Install Buildozer and Python build tools
+        env:
+          SETUPTOOLS_USE_DISTUTILS: local
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "setuptools<81" wheel
+          python -m pip install "buildozer==1.5.0" "cython<3.0" virtualenv
+          python -c "import distutils; print('distutils available:', distutils.__file__)"
+          buildozer --version
+
+      - name: Verify build layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$APP_DIR"
+          echo "Current build directory: $(pwd)"
+          ls -la
+          test -f buildozer.spec
+          test -f src/main.py
+
+      - name: Build debug APK
+        id: build
+        shell: bash
+        env:
+          SETUPTOOLS_USE_DISTUTILS: local
+        run: |
+          set -uo pipefail
+          cd "$APP_DIR"
+
+          set +e
+          yes | buildozer -v android debug 2>&1 | tee "$GITHUB_WORKSPACE/buildozer_build.log"
+          BUILD_STATUS=${PIPESTATUS[1]}
+          set -e
+
+          if [ "$BUILD_STATUS" -ne 0 ]; then
+            echo "Buildozer failed with exit code $BUILD_STATUS"
+            exit "$BUILD_STATUS"
+          fi
+
+          mkdir -p "$GITHUB_WORKSPACE/apk-output"
+          find bin -maxdepth 1 -type f -name '*.apk' \
+            -exec cp -v {} "$GITHUB_WORKSPACE/apk-output/" \;
+
+          if ! find "$GITHUB_WORKSPACE/apk-output" -maxdepth 1 \
+            -type f -name '*.apk' | grep -q .; then
+            echo "ERROR: Build completed but no APK was found in $APP_DIR/bin"
+            exit 1
+          fi
+
+      - name: Show tail of build log on failure
+        if: failure()
+        run: |
+          echo "----- Last 250 lines of the build log -----"
+          tail -n 250 "$GITHUB_WORKSPACE/buildozer_build.log" || true
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: buildozer-log
+          path: buildozer_build.log
+          if-no-files-found: warn
+
+      - name: Upload APK artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: javanrood-client-debug-apk
+          path: apk-output/*.apk
+          if-no-files-found: error
