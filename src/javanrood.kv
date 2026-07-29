@@ -1,0 +1,197 @@
+#:import theme theme_kv
+
+<HeaderBar@BoxLayout>:
+    size_hint_y: None
+    height: dp(64)
+    canvas.before:
+        Color:
+            rgba: theme.RGBA_NAVY_DARK
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgba: theme.RGBA_GOLD
+        Rectangle:
+            pos: self.x, self.y
+            size: self.width, dp(3)
+
+<StatusBox@BoxLayout>:
+    size_hint_y: None
+    height: self.minimum_height
+    padding: dp(12)
+    canvas.before:
+        Color:
+            rgba: 0.933, 0.957, 0.984, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<PrimaryButton@Button>:
+    background_normal: ""
+    background_color: theme.RGBA_GOLD
+    color: 0.05, 0.12, 0.23, 1
+    bold: True
+    size_hint_y: None
+    height: dp(48)
+
+<SecondaryButton@Button>:
+    background_normal: ""
+    background_color: theme.RGBA_NAVY
+    color: 1, 1, 1, 1
+    size_hint_y: None
+    height: dp(48)
+
+<RTLTextInput@TextInput>:
+    halign: "right"
+    base_direction: "rtl"
+    multiline: False
+    size_hint_y: None
+    height: dp(48)
+    padding: [dp(10), dp(12), dp(10), dp(12)]
+
+<RTLLabel@Label>:
+    halign: "right"
+    valign: "middle"
+    text_size: self.width, None
+    color: theme.RGBA_TEXT_DARK
+
+<ActivationScreen>:
+    name: "activation"
+    BoxLayout:
+        orientation: "vertical"
+        canvas.before:
+            Color:
+                rgba: theme.RGBA_BG
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        HeaderBar:
+            RTLLabel:
+                text: root.app_title
+                color: 1, 1, 1, 1
+                bold: True
+                font_size: "18sp"
+
+        ScrollView:
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height
+                padding: dp(18)
+                spacing: dp(14)
+
+                StatusBox:
+                    RTLLabel:
+                        id: status_label
+                        text: root.status_text
+                        text_size: self.width, None
+                        size_hint_y: None
+                        height: self.texture_size[1]
+
+                RTLLabel:
+                    text: root.rtl_text("ساخت درخواست فعال‌سازی")
+                    bold: True
+                    font_size: "16sp"
+                    size_hint_y: None
+                    height: dp(30)
+
+                RTLLabel:
+                    text: root.rtl_text("برای اولین فعال‌سازی، کد ملی خود را وارد کنید و فایل درخواست بسازید. این فایل را به مدیر سامانه تحویل دهید.")
+                    size_hint_y: None
+                    height: self.texture_size[1] + dp(10)
+
+                RTLTextInput:
+                    id: request_national_code
+                    hint_text: root.rtl_text("کد ملی ۱۰ رقمی")
+                    input_filter: "int"
+
+                PrimaryButton:
+                    text: root.rtl_text("ساخت فایل درخواست (.jrr)")
+                    on_release: root.create_request()
+
+                Widget:
+                    size_hint_y: None
+                    height: dp(10)
+                    canvas:
+                        Color:
+                            rgba: theme.RGBA_BORDER
+                        Rectangle:
+                            pos: self.x, self.center_y
+                            size: self.width, dp(1)
+
+                RTLLabel:
+                    text: root.rtl_text("فعال‌سازی یا تمدید با فایل دریافتی")
+                    bold: True
+                    font_size: "16sp"
+                    size_hint_y: None
+                    height: dp(30)
+
+                RTLLabel:
+                    id: activation_path_label
+                    text: root.activation_path_display
+                    size_hint_y: None
+                    height: self.texture_size[1] + dp(10)
+
+                SecondaryButton:
+                    text: root.rtl_text("انتخاب فایل فعال‌سازی (.jra)")
+                    on_release: root.choose_activation_file()
+
+                RTLTextInput:
+                    id: activation_national_code
+                    hint_text: root.rtl_text("کد ملی ۱۰ رقمی")
+                    input_filter: "int"
+
+                PrimaryButton:
+                    text: root.rtl_text("نصب فایل فعال‌سازی یا تمدید")
+                    on_release: root.install_activation()
+
+<LoginScreen>:
+    name: "login"
+    BoxLayout:
+        orientation: "vertical"
+        canvas.before:
+            Color:
+                rgba: theme.RGBA_BG
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        HeaderBar:
+            RTLLabel:
+                text: root.app_title
+                color: 1, 1, 1, 1
+                bold: True
+                font_size: "18sp"
+
+        BoxLayout:
+            orientation: "vertical"
+            padding: dp(24)
+            spacing: dp(14)
+
+            StatusBox:
+                RTLLabel:
+                    id: license_info_label
+                    text: root.license_info_text
+                    text_size: self.width, None
+                    size_hint_y: None
+                    height: self.texture_size[1]
+
+            RTLTextInput:
+                id: username_input
+                hint_text: root.rtl_text("نام کاربری")
+
+            RTLTextInput:
+                id: password_input
+                hint_text: root.rtl_text("رمز عبور")
+                password: True
+
+            PrimaryButton:
+                text: root.rtl_text("ورود")
+                on_release: root.login()
+
+            SecondaryButton:
+                text: root.rtl_text("وارد کردن فایل فعال‌سازی یا تمدید")
+                on_release: root.go_to_activation()
+
+            Widget:
