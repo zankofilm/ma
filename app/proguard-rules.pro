@@ -1,3 +1,0 @@
--keep class org.bouncycastle.** { *; }
--dontwarn org.bouncycastle.**
--keepattributes Signature
