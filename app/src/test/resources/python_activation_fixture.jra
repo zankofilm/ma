@@ -1,0 +1,14 @@
+{
+  "format": "JAVANROOD-CLIENT-ACTIVATION",
+  "version": 1,
+  "kind": "activation",
+  "license_id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+  "issued_at": "2026-07-30T05:05:00Z",
+  "admin_sign_public": "Kay64UG8yvCyLhqU000LxzYeUm0L_hLIl5S8kyKWbdc=",
+  "admin_exchange_public": "QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXl8=",
+  "admin_sign_fingerprint": "24F6:ED6A:CBFE:1009:C030:D7CA:567C:33CA",
+  "salt": "AQIDBAUGBwgJCgsMDQ4PEA==",
+  "nonce": "FRYXGBkaGxwdHh8g",
+  "ciphertext": "TMvJzPZyfKQA-rPdsHyTRjsZs9Y9yeugjm7aWiqgm2Okp3eBxOlokEchh_TKxWl4rBNDN_zENZkSUcMX2hxDyCsdUK0AGCBRZoktdo8fIONsoA0-oT5Z8VSChZU_350QD_RSEknE1RBnb8_o7YhMeOVvdres3N_bhDFwOpWQWvAMHU_nGZCJL3MNY2F_gHhSLtXKxTdLnkuaLi1E2GnoG35P2CKxkZFs63T1ww1wJ4ur7pUF8FLSQ0Zj43Bz3Up8FifX_pYbeddV7dQukLyBsGNShuxXWqU_Erw6uPS_HfguGjhCVh95W5Np8Nc5t-Ko89JT2GcLBChQloQYED1Cd9acQYl6CPHlPWdEQAEz9hpvQDGu5f1ijdHEwz-fRDKSDvMif-takUYb_XXXDbGsltZnrYt-qeC_HP7Va9E-Z6671Z74F0gh3OHDH6KsiGRMs76PqqY5aWfGH_0l9pGQMpvtduNZhLkvQZqb7Xm0pI8PoP5tTFGnKeWrlIQSKTc5CSUJrlroS8PRKPweUACvUDw04VIpHTOn0O9WbiMS8Qk-iK6I5C3vi7zxtw1dThGdQFyUzTl-MkVWaYj19XNvFjEG2qaQaKBKOOQx3Bz3V8P3kQk6wL6rOc7MJZqY0dM0KUD6hQvhKjoSZ_wjYdIeDg5SRzHUG3Eph86TaXfNclv9PUQkIH5h1oBuuwWTEpysm0UEU5HXA_1k12k4Rscch3zvMJdmQTolRmmrcrhN5KB6HdoTfvwp-nH4F2G_QvLUNIzaXkkGTsgRZ3m3DoUz-BOXU_YR2var40UXnBNyA47zZJ-IEU11C7Quw4a6J_GHV9_QRUMVA63yPmfkzyA06axxx9p8RjeGbyZmC1HvlPQ3iPt_JsH6J95hX8PHPjqj5UpF16bjYa6lp-z6jpNIQR2htIw=",
+  "signature": "GGKQ0NFVzyQSSmZUZiHOcN1w0BZVhF-kC3uZGWg4z4ITWPinnLCA6HqtDa8KiSNumrn4eaNPCW-_dipnPzDMBw=="
+}
